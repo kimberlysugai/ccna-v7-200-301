@@ -1,0 +1,59 @@
+CONFIGURAÇÃO BASE DO SWITCH
+
+
+#enable
+	#clock set 11:11:05 31 maio 2024
+#configure terminal
+
+configuração para o nome do equipamento
+#hostname sw-12-2960-1
+
+criptografia de senha do Tipo-7 Password do Cisco IOS
+	#service password-encryption
+
+para desbloquear o terminal Ctrl+Shift+6
+
+desativar ou desabilitar um recurso
+	#no ip domain-lookup
+
+Configuração do banner
+	banner motd #AVISO: acesso autorizado somente a funcionarios#
+
+Senhas tipo-5(Acessar ,odo EXEC privilegiado)
+	enable secret kimbely@sugai
+
+ criação de usuários comuns para administrar o Switch
+	#username kimberly secret kimberly@sugai
+		#username kimberly password kimberly@sugai
+			#username admin privilege 15 secret kimberly@sugai
+
+COnfiguração da Line Console
+	#Line console 0
+
+!DICA: conexão feita utilizando o Cabo Console RS232
+fazer login local utilizando os usuários e senhas locais
+	#login local
+
+Habilitando a senha de acesso do Tipo-7
+	#password kimberly@sugai
+
+Configurar sincronismo
+	#logging synchronous
+
+configuração do tempo de inatividade em minutos e segundos da linha console
+	#exec-timeout 5 30
+
+(após passar esse tempo sem a utilização ou alteração no terminal ele faz logoff)
+
+para finalizar
+	#end
+
+Salvando as configurações da Memória RAM para Memória NVRAM
+	#copy running-config startup-config
+
+Para vizualizar as configurações da Memória RAM
+	#show running-config
+
+	#exit
+
+entra no modo usuário com senha
