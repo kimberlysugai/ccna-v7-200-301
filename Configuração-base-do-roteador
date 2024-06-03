@@ -2,8 +2,6 @@ Configuração base router 1941
 
 !Autor: Kimberly Sugai
 
-!Versão: 0.04
-!Testado e homologado no Cisco Packet Tracer 7.3.x, 8.0.x, 8.1.x, 8.2.x e GNS3 2.2.x
 
 !Acessando o modo EXEC Privilegiado
 enable
