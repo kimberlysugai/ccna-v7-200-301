@@ -1,0 +1,152 @@
+!Acessando o modo Exec Privilegiado
+enable
+
+	!Acessar modo de configuração global
+	configure terminal
+
+		!Configuração da Interface de Loopback 0 (sempre será a Loopback 0, não mudar o número)
+		interface loopback 0
+
+		!Descrição da Interface
+		description Interface de Loopback para ID do OSPF
+
+		!Endereço IPv4 para o ID do OSPF
+		!Verificar o endereçamento IPv4 de Loopback do seu grupo
+		!Endereço IPv4 utilizado para o gerenciamento e métrica do OSPF
+		!OBSERVAÇÃO IMPORTANTE: veja o arquivo 00-DocumentacaoDaRede.txt a partir da linha: 270 
+		!(NOVA ETAPA: Determinação das Configurações do Protocolo de Roteamento Dinâmico OSPF)
+		ip address 3.3.3.3 255.255.255.255
+
+		!Inicializando a interface
+		no shutdown
+
+		!Saindo das configurações da Interface
+		exit
+
+		!Configurando o Roteamento de OSPF (??? = número de processo local)
+		!Verificar a tabela de Endereçamento para ver o seu número de Processo Local
+		!Pode existir vários processo locais do OSPF, cada um com uma finalidade diferente
+		!OBSERVAÇÃO IMPORTANTE: veja o arquivo 00-DocumentacaoDaRede.txt a partir da linha: 270 
+		!(NOVA ETAPA: Determinação das Configurações do Protocolo de Roteamento Dinâmico OSPF)
+		router ospf 3
+
+		!Identificação do Roteador
+		!Verificar o endereço IPv4 de Loopback do seu grupo
+		!OSPF utiliza o endereço de Loopback para gerenciar o processo local
+		router-id 3.3.3.3
+			
+		!Desativando os anúncios do Protocolo OSPF na Interface da LAN
+		!Essa interface não vai anunciar suas rotas pela interface, mais pode receber anúncios
+		passive-interface gigabitEthernet 0/0
+
+		!Desativando os anúncios do Protocolo OSPF na Interface de Internet
+		!Essa interface não vai anunciar suas rotas pela interface, mais pode receber anúncios
+		passive-interface gigabitEthernet 0/1
+
+		!Configuração da referência de largura de banda (Métrica)
+		!Utilizado para o cálculo de custo dos links, padrão 10^8 = 100000000 bps
+		!Link da tabela padrão de métrica do custo dos links do OSPF: 
+		!http://nomundodasredes.blogspot.com.br/2012/03/metrica-do-ospf.html
+		!https://ciscoredes.com.br/wp-content/uploads/2012/06/Cost_Interface.png
+		auto-cost reference-bandwidth 10000
+
+		!Registrar todas as alterações de adjacência e o estado dos links
+		!Esses registros vão ficar armazenados no log do sistema
+		log-adjacency-changes detail
+
+		!Declarando as redes fisicamente conectadas
+		!Utilizando o recurso de Wildcard Mask (máscara coringa - máscara invertida)
+		!Configuração da Área 0 (Single Area - Backbone, obrigatória existir)
+		!Calculando a máscara coringa: 255.255.255.255 - sua_mascara
+		!Exemplo: 255.255.255.255 - 255.255.255.252 = 0.0.0.3
+		!OBSERVAÇÃO IMPORTANTE: veja o arquivo 00-DocumentacaoDaRede.txt a partir da linha: 270 
+		!(NOVA ETAPA: Determinação das Configurações do Protocolo de Roteamento Dinâmico OSPF)
+		network 172.16.30.0 0.0.0.255 area 0
+		network 172.16.31.0 0.0.0.255 area 0
+		network 172.16.32.0 0.0.0.255 area 0
+		network 172.16.33.0 0.0.0.255 area 0
+		network 172.16.34.0 0.0.0.255 area 0
+		network 172.16.35.0 0.0.0.255 area 0
+		network 192.168.1.09 0.0.0.3 area 0
+		network 192.168.1.06 0.0.0.3 area 0
+
+		!Saindo de todas as configurações
+		end
+
+!Salvando todas as configurações
+copy running-config startup-config
+
+!Comandos de Verificação do OSPF e da última etapa
+
+!Visualizando as configurações
+show running-config
+
+!Visualizando parâmetros e estatísticas do processo do protocolo de roteamento IP
+show ip protocols
+
+!Visualizando as configurações de endereçamento IPv4
+show ip interface brief
+
+!Visualizando as informações de Roteamento
+show ip route
+
+!Visualizando as informações de Roteamento do Open Shortest Path First (OSPF)
+show ip route ospf 
+
+!Visualizando as informações do Processo do OSPF
+show ip route ospf ??? (ID)
+
+!Visualizando as informações das listas das vizinhanças do OSPF
+show ip ospf neighbor
+
+!Visualizando as informações sumarizadas do banco de dados do OSPF
+show ip ospf database
+
+!Visualizando as informações dos statos dos links do OSPF
+show ip ospf database router
+
+!Visualizando as informações do processo do OSPF
+show ip ospf ??? (ID)
+
+!Visualizando as informações de interfaces do OSPF
+
+
+--------------------------------------------------------------------------
+enable
+	configure terminal
+	interface loopback 0
+	description Interface de Loopback para ID do OSPF
+	ip address 3.3.3.3 255.255.255.255
+	no shutdown
+	exit
+
+	router ospf 3
+	router-id 3.3.3.3
+	passive-interface gigabitEthernet 0/0
+	passive-interface gigabitEthernet 0/1
+	auto-cost reference-bandwidth 10000
+	log-adjacency-changes detail
+	network 172.16.30.0 0.0.0.255 area 0
+		network 172.16.31.0 0.0.0.255 area 0
+		network 172.16.32.0 0.0.0.255 area 0
+		network 172.16.33.0 0.0.0.255 area 0
+		network 172.16.34.0 0.0.0.255 area 0
+		network 172.16.35.0 0.0.0.255 area 0
+		network 192.168.1.09 0.0.0.3 area 0
+		network 192.168.1.06 0.0.0.3 area 0
+		end
+		
+copy running-config startup-config
+show running-config
+show ip protocols
+show ip interface brief
+show ip route
+show ip route ospf 
+show ip route ospf 3 (ID)
+show ip ospf neighbor
+show ip ospf database
+show ip ospf database router
+show ip ospf 3 (ID)
+
+
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa -c aes256-cbc kimberly@172.16.33.254
